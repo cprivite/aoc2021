@@ -1,26 +1,33 @@
 package main
 
 import (
+	"bufio"
 	"fmt"
 	"os"
-	"strings"
+	"strconv"
 )
 
 func main() {
 	fileName := "input.txt"
-
-	fileBytes, err := os.ReadFile(fileName)
-
+	file, err := os.Open(fileName)
+	scanner := bufio.NewScanner(file)
 	if err != nil {
-		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	pings := strings.Split(string(fileBytes), "\n")
+	pings := make([]int, 0)
+	for scanner.Scan() {
+		number, _ := strconv.Atoi(scanner.Text())
+		pings = append(pings, number)
+	}
 
-	var timesIncremented int
-	var lastPing string
+	err = file.Close()
+	if err != nil {
+		os.Exit(1)
+	}
 
+	timesIncremented := 0
+	lastPing := 0
 	for i, ping := range pings {
 		if i == 0 {
 			timesIncremented++
@@ -34,4 +41,15 @@ func main() {
 	}
 
 	fmt.Println("Total times incremented: ", timesIncremented)
+
+	timesIncrementedAgain := 0
+
+	for i := 0; i+3 < len(pings); i++ {
+		ping := pings[i]
+		if ping < pings[i+3] {
+			timesIncrementedAgain = timesIncrementedAgain + 1
+		}
+	}
+
+	fmt.Println("Total times incremented: ", timesIncrementedAgain)
 }

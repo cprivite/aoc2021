@@ -15,31 +15,38 @@ func main() {
 		log.Fatal(err)
 	}
 
-	input, err := i.Strings(2021, 2)
+	input, err := i.Strings(2021, 3)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	x := 0
-	y := 0
-	z := 0
+	var gamma = make([]int, len(input[0]))
+	var gammaRate = make([]int, len(input[0]))
+	var epsilon = make([]int, len(input[0]))
+	var epsilonRate = make([]int, len(input[0]))
 
-	for i, text := range input {
-		vector := strings.Split(text, " ")
-		direction := vector[0]
-		distance, _ := strconv.Atoi(vector[1])
-		fmt.Println("index:", i, "\tDirection:", direction, "\tValue:", distance)
-		switch direction {
-		case "forward":
-			x = x + distance
-			y = y + (z * distance)
-		case "up":
-			z = z - distance
-		case "down":
-			z = z + distance
+	for _, byte := range input {
+		for j, bit := range byte {
+			switch bit {
+			case '1':
+				gamma[j] += 1
+			case '0':
+				epsilon[j] += 1
+			}
 		}
-		fmt.Println("X:", x, "Y:", y, "Z:", z)
 	}
 
-	fmt.Println("X:", x, "Y:", y, "Z:", z, "Multiplied", x*y)
+	for i := 0; i < len(input[0]); i++ {
+		if gamma[i] > epsilon[i] {
+			gammaRate[i] = 1
+		} else {
+			epsilonRate[i] = 1
+		}
+	}
+
+	fmt.Println(gamma, "\n", epsilon, "\n", gammaRate, "\n", epsilonRate)
+	gammaRateDec, _ := strconv.ParseInt(strings.Trim(strings.Join(strings.Fields(fmt.Sprint(gammaRate)), ""), "[]"), 2, 32)
+	epsilonRateDec, _ := strconv.ParseInt(strings.Trim(strings.Join(strings.Fields(fmt.Sprint(epsilonRate)), ""), "[]"), 2, 32)
+	fmt.Println("GammaRate:", gammaRateDec, "EpsilonRate:", epsilonRateDec, "Multiplied:", gammaRateDec*epsilonRateDec)
+
 }

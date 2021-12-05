@@ -88,17 +88,13 @@ func main() {
 	}
 
 	for _, i := range calls {
-		winnerFound := false
 		for j := 0; j < len(cardStack); j++ {
 			cardStack[j] = markScore(cardStack[j], i)
-			winnerFound = checkWin(cardStack[j])
-			if winnerFound {
+			if checkWin(cardStack[j]) {
 				fmt.Println("Score = ", sumCard(cardStack[j]), "justCalled", i, "Multiplied", i*sumCard(cardStack[j]))
-				break
+				cardStack = append(cardStack[:j], cardStack[j+1:]...)
+				j -= 1
 			}
-		}
-		if winnerFound {
-			break
 		}
 	}
 }
@@ -140,9 +136,6 @@ func markScore(card [][]int, call int) [][]int {
 				break
 			}
 		}
-	}
-	for _, row := range card {
-		fmt.Println("call:", call, "\n", row)
 	}
 	return card
 }
